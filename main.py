@@ -13,6 +13,7 @@ import time
 import datetime
 import sched
 from datetime import timedelta
+import sys
 
 #pega os dados de uma cidade
 def weather (cidadeInput, internetConnection):
@@ -28,9 +29,10 @@ def weather (cidadeInput, internetConnection):
         encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosTempo = json.loads(data)
-        return [cidadeInput,str(dadosTempo['list'][0]['main']['temp'])]
+        print (dadosTempo)
+        return [dadosTempo['list'][0]['dt'],dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min']]
     else:
-        return [cidadeInput,'-']
+        return ['-']
 
 
 #SQL /////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +81,8 @@ if not existsTable('test'):
 
 
 
-#horaTeste = datetime.now() + timedelta(hours=1)
+#horaTeste = datetime.datetime.now() + timedelta(hours=1)
+horaTeste = datetime.datetime.now() + timedelta(minutes=0)
 
 #chamar as funçõs no laço, dentro do try/exept
 
@@ -89,26 +92,33 @@ while True:
     #if(datetime.time == )
     #print (str(datetime.datetime.now().minute) + ' ' + str(horaTeste.minute))
     #if datetime.now().hour == horaTeste.hour:
-    print(datetime.datetime.now().second)
+
+    #apenas para teste, conta o tempo na tela
+    sys.stdout.write('\r' + str(datetime.datetime.now().second))
+    #####
     if datetime.datetime.now().minute == horaTeste.minute:
-        try:
-            data = weather('porto alegre', True)
-            linha = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')+ ';' + data[0] + ';' + data[1] #melhor forma de fazer isso?
-            print  (linha)
-            addWeatherElements('test',weather('porto alegre',True))
+        #try:
+        data = weather('porto alegre', True)
+        linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao'#melhor forma de fazer isso?
+        print  (linha)
+        #addWeatherElements('test',weather('porto alegre',True))
+        
+        #horaTeste = datetime.datetime.now() + timedelta(hours=1)
+        horaTeste = datetime.datetime.now() + timedelta(minutes=1)
+            
+            #conn.commit()
+        #except:
+         #   print ("Fail to connect") 
+         #   data = weather('porto alegre', False)
+         #   linha = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')+ ';' + data[0] + ';' + data[1] #melhor forma de fazer isso?
+         #   print  (linha)
+            #addWeatherElements('test',weather('porto alegre',False))
             #horaTeste = datetime.datetime.now() + timedelta(hours=1)
-            horaTeste = datetime.datetime.now() + timedelta(minutes=1)
-            conn.commit()
-        except:
-            print ("Fail to connect") 
-            data = weather('porto alegre', False)
-            linha = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')+ ';' + data[0] + ';' + data[1] #melhor forma de fazer isso?
-            print  (linha)
-            addWeatherElements('test',weather('porto alegre',False))
-            #horaTeste = datetime.datetime.now() + timedelta(hours=1)
-            horaTeste = datetime.datetime.now() + timedelta(minutes=1)
-            conn.commit()
+         #   horaTeste = datetime.datetime.now() + timedelta(minutes=1)
+            
+            #conn.commit()
     #time.sleep(60) #levar em conta o tempo para baixar os dados? (simultaneamente ou um depois do outro?)
+   # id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
 
 
 
