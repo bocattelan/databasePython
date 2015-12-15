@@ -30,7 +30,7 @@ def weather (cidadeInput, internetConnection):
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosTempo = json.loads(data)
         print (dadosTempo)
-        return [dadosTempo['list'][0]['dt'],dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min']]
+        return [dadosTempo['list'][0]['dt'],dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min'],'-','-','-','-']#dadosTempo['list'][0]['rain']['3h'] ]
     else:
         return ['-']
 
@@ -99,7 +99,7 @@ while True:
     if datetime.datetime.now().minute == horaTeste.minute:
         #try:
         data = weather('porto alegre', True)
-        linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao'#melhor forma de fazer isso?
+        linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao: ' + str(data[4]) + '\nEventos: ' + '\nperson_id(?): ' + '\nCreated At: ' + '\nUpdated At: ' #melhor forma de fazer isso?
         print  (linha)
         #addWeatherElements('test',weather('porto alegre',True))
         
