@@ -36,35 +36,11 @@ def weather (cidadeInput, internetConnection):
 
 
 #pega os dados de uma pessoa
-def jawbone():
-    def jauth():
-        code = params[:code]
-        uri = URI("https://jawbone.com/auth/oauth2/token")
-        params = {
-          client_id: '0NIN0D_htj0',
-          client_secret: 'aac3f063d18489fc2e3fa3dabbd5c01a120fa450',
-          grant_type: 'authorization_code',
-          scope: 'basic_read extended_read location_read move_read',
-          code: code
-        }
-        uri.query = URI.encode_www_form(params)
-
-    def jrequest():
-        uri = URI('https://jawbone.com/nudge/api/v.1.1/users/@me/moves')
-        token = params[:oauth_token]
-        request = Net.HTTP.Get.new(uri.to_s, {Authorization : "Bearer #{token}"})
-        http = Net.HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        response = http.request(request)
-        
-        body = response.body
-        #render layout: false
-
-
+def jawboneMoves(client_id,client_secret):
 
     params = {
         "response_type=code" : 'code',
-          "client_id": '0NIN0D_htj0',
+          "client_id": client_id,
           'scope': 'basic_read extended_read location_read move_read',
           'redirect_uri' : ''
         }
@@ -72,14 +48,13 @@ def jawbone():
     request = urllib.request.Request(url, headers = params)
     #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
     #data = (urllib.request.urlopen(request).read().decode(encoding))
-    print (request)
 
 
     information = []
     #arquivo = open('newToken.txt' , 'w+')
     params = {
-          "client_id": '0NIN0D_htj0',
-          "client_secret": 'aac3f063d18489fc2e3fa3dabbd5c01a120fa450',
+          "client_id": client_id,
+          "client_secret": client_secret,
           "grant_type": 'refresh_token',
           "refresh_token": ''
         }
@@ -186,7 +161,7 @@ if not existsTable('test'):
 
 
 
-jawbone()
+jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 #horaTeste = datetime.datetime.now() + timedelta(hours=1)
 horaTeste = datetime.datetime.now() + timedelta(minutes=0)
 
