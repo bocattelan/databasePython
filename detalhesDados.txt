@@ -1,0 +1,101 @@
+JAWBONE
+
+Moves
+
+cria um "move" por dia, começando no momento em que o usuário começa a usar a pulseira
+
+no por dia temos um campo chamado "hourly_totals" que diz por hora
+
+as informações são:
+distance(m)
+km
+bmr_day - estimação do ritmo metabolico do dia
+bmr - estimação do ritmo metabolico atual(?)
+calories - dividido em bg, que é sem o contexto de um exercicio e wo, que é dentro do contexto de um exercicio
+steps
+speed(m/s)
+sunrise - hora que o sol nasceu
+sunset - hora que o sol se pos
+hourly_totals - lista dividia por horas (como comentado acima)
+	[distance
+	calories
+	steps
+	active_time
+	inactive_time
+	longest_active_time
+	longest_idle_time]
+
+////////
+
+Move ticks
+
+retorna detalhes granulares dos "moves", a cada 60 segundos
+
+as informações são:
+distance(m)
+active_time - tempo ativo durante esse momento (60 segundos)
+calories
+steps
+speed(m/s)
+
+//////////////////////////////////////////////////
+
+Sleeps
+
+uma lista de "sonos"
+
+
+as informações são:
+sub_type - tipo do sono 
+	[0=normal
+	1=power_nap
+	2=nap]
+time_created - quando o "sono" foi criado
+time_completed - quando o "sono" foi completo
+awake_time - timestamp que diz quando o usuário acordou
+asleep_time - timestamp que diz quando o usuário dormiu
+awakenings - número de vezes que o usuário acordou durante o período de "sono"
+rem - duração do sono REM (s)
+light - tempo de sono na luz (s)
+deep - tempo de sono profundo (s)
+awake - tempo acordado (s)
+duration - duração total do "sono" (s)
+
+
+Sleep phases
+
+dado um "sono", retorna as fases de sono
+
+as informações são:
+depth - fase de sono
+	[1=awake
+	2=light
+	3=deep]
+time - timestamp que diz quando essa fase do sono começou
+
+
+//////////\\\\\\\\\\\\\\\////////////////\\\\\\\\\\\\\\\\\///////////////\\\\\\\\\\\\\\\////////////////\\\\\\\\
+
+WEATHER
+
+Current
+
+weather.main - grupo de parametros
+	[Rain
+	Snow
+	Extreme
+	etc]
+main.temp - temperatura 
+main.pressure - (hPa)
+main.humidity - porcentagem de umidade
+main.temp_min - mínima temperatura registrada no momento
+main.temp_max - máxima temperatura registrada no momento
+main.sea_level - pressão atmosférica no nivel do oceano (hPa)
+main.grnd_level - pressão atmosférica no nível do chão (hPa)
+wind.speed - velocidade do vento
+wind.deg - direção do vento (graus)
+rain.3h - volume de chuva das últimas 3 horas
+snow.3h - volume de neve nas últimas 3 horas
+dt - momento que os dados foram calculados
+sys.sunrise - momento que o sol nasce (UTC)
+sys.sunset - momento que o sol se poe (UTC)

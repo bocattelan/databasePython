@@ -119,11 +119,20 @@ def jawbone():
         encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosNedel = json.loads(data)
-        information.append(dadosNedel)
+        
         #json.dump(dadosNedel,arquivo)
 
         for evento in dadosNedel['data']['items']:
             print(evento['date'])
+            urlTicks = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves/' + evento['xid'] + '/ticks'
+            request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
+            response = urllib.request.urlopen(request).getcode()
+            encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+            data = (urllib.request.urlopen(request).read().decode(encoding))
+            dadosNedel = json.loads(data)
+            #aqui o information vai ter todos os ticks de um "move"
+            information.append(dadosNedel)
+
         if 'links' in dadosNedel['data'].keys():
             url = 'https://jawbone.com' + dadosNedel['data']['links']['next']
         else: 
