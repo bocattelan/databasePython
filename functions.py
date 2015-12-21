@@ -36,7 +36,7 @@ def weather (cidadeInput, internetConnection):
 
 #JAWBONE /////////////\\\\\\\\\\\\\\\\\//////////////////\\\\\\\\\\\\\\\\\\\//////////////////
 #pega os dados de uma pessoa
-def jawboneMoves(client_id,client_secret,tableName,cur):
+def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
 
     params = {
         "response_type=code" : 'code',
@@ -117,6 +117,7 @@ def jawboneMoves(client_id,client_secret,tableName,cur):
             tempoIntervalo = datetime.datetime.utcfromtimestamp(dadosNedelDetalhes['data']['items'][0]['time_completed'])
             for evento in dadosNedelDetalhes['data']['items']:
                     if datetime.datetime.utcfromtimestamp(evento['time_completed']) > tempoIntervalo:
+                        addMoveElement(tableName,[tempoIntervalo,passosIntervalo,person_id,datetime.datetime.now(),datetime.datetime.now()],cur)
                         tempoIntervalo = datetime.datetime.utcfromtimestamp(evento['time_completed']) + timedelta(minutes=10)
                         print (passosIntervalo)
                         passosIntervalo = 0
@@ -131,6 +132,7 @@ def jawboneMoves(client_id,client_secret,tableName,cur):
             url = 'https://jawbone.com' + dadosNedelDetalhes['data']['links']['next']
         else: 
             #print(information)
+            printTable(tableName,cur)
             return information
 
 
@@ -291,23 +293,28 @@ def jawboneHeart(client_id,client_secret):
 #SQL /////////////////////////////////////////////////////////////////////////////////////////////
 #dado um nome de tabela retorna verdadeiro se existe
 def existsTable(tableName,cur):
-    cur.execute("select exists(select * from information_schema.tables where table_name=%s)", ('test',))
+    cur.execute("select exists(select * from information_schema.tables where table_name=%s)", (tableName,))
     return cur.fetchone()[0]
 
 def printTable(tableName,cur):
-    if existsTable(tableName):
+    if existsTable(tableName,cur):
         cur.execute("SELECT * FROM " + tableName)
         cur.fetchone()
         for row in cur:
             print(row)
 #dado um nome de tabela e um json ele salva na tabela
 def addWeatherElements(tableName,elements,cur):
-    if existsTable(tableName):
+    if existsTable(tableName,cur):
         query = "INSERT INTO " + tableName
         cur.execute(query + "(cidade, temperatura) VALUES (%s, %s)",elements)
 
+def addMoveElement(tableName,element,cur):
+    if existsTable(tableName,cur):
+        query = "INSERT INTO " + tableName
+        cur.execute(query + "(datetime, activity,person_id,created_at, updated_at) VALUES (%s, %s,%s,%s,%s)",element)
+
 def deleteTable(tableName,cur):
-    if existsTable(tableName):
+    if existsTable(tableName,cur):
         cur.execute("DROP TABLE " + tableName + " ;")
         print("Table '"+ tableName +"' deleted")
 

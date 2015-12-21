@@ -25,8 +25,9 @@ try:
 except:
     print ("I am unable to connect to the database")
 
-if not existsTable('test',cur):
-    cur.execute("CREATE TABLE activities (id serial PRIMARY KEY, datetime datetime, person_id int, created_at datetime,updated_at datetime);")
+deleteTable('activities',cur)
+if not existsTable('activities',cur):
+    cur.execute("CREATE TABLE activities (id serial PRIMARY KEY, datetime timestamp,activity int, person_id int, created_at timestamp,updated_at timestamp);")
     print('New table created')
 
 
@@ -37,7 +38,8 @@ if not existsTable('test',cur):
 
 
 
-jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450','activities',cur)
+jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450',1,'activities',cur)
+conn.commit()
 #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 #jawboneHeart('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 #horaTeste = datetime.datetime.now() + timedelta(hours=1)
