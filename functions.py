@@ -36,7 +36,7 @@ def weather (cidadeInput, internetConnection):
 
 #JAWBONE /////////////\\\\\\\\\\\\\\\\\//////////////////\\\\\\\\\\\\\\\\\\\//////////////////
 #pega os dados de uma pessoa
-def jawboneMoves(client_id,client_secret):
+def jawboneMoves(client_id,client_secret,tableName,cur):
 
     params = {
         "response_type=code" : 'code',
@@ -63,7 +63,7 @@ def jawboneMoves(client_id,client_secret):
     #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
     #data = (urllib.request.urlopen(request).read().decode(encoding))
     #dadosNedel = json.loads(data)
-    print (params["refresh_token"])
+    #print (params["refresh_token"])
     #json.dump(data,arquivo)
 
 
@@ -81,7 +81,7 @@ def jawboneMoves(client_id,client_secret):
     #else:
         
         
-        print ("Requisitando acesso aos dados")
+        print ("Requisitando acesso aos dados Moves")
         request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
         response = urllib.request.urlopen(request).getcode()
         if response !=200:
@@ -99,19 +99,38 @@ def jawboneMoves(client_id,client_secret):
 
         for evento in dadosNedel['data']['items']:
             print(evento['date'])
-            urlTicks = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves/' + evento['xid'] + '/ticks'
-            request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
-            response = urllib.request.urlopen(request).getcode()
-            encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
-            data = (urllib.request.urlopen(request).read().decode(encoding))
-            dadosNedel = json.loads(data)
+            urlTicks = 'https://jawbone.com/nudge/api/v.1.1/moves/' + evento['xid'] + '/ticks'
+            requestTicks = urllib.request.Request(urlTicks, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
+            responseTicks = urllib.request.urlopen(requestTicks).getcode()
+            if response !=200:
+                break
+            encodingTicks = urllib.request.urlopen(requestTicks).info().get_param('charset', 'utf8')
+            dataTicks = (urllib.request.urlopen(requestTicks).read().decode(encodingTicks))
+            dadosNedelDetalhes = json.loads(dataTicks)
             #aqui o information vai ter todos os ticks de um "move"
-            information.append(dadosNedel)
+            #information.append(dadosNedelDetalhes)
+            #print(dadosNedelDetalhes['data']['items'])
+            #for i in dadosNedelDetalhes['data']['items']:
+                #print(i['steps'])
 
-        if 'links' in dadosNedel['data'].keys():
-            url = 'https://jawbone.com' + dadosNedel['data']['links']['next']
+            passosIntervalo = 0
+            tempoIntervalo = datetime.datetime.utcfromtimestamp(dadosNedelDetalhes['data']['items'][0]['time_completed'])
+            for evento in dadosNedelDetalhes['data']['items']:
+                    if datetime.datetime.utcfromtimestamp(evento['time_completed']) > tempoIntervalo:
+                        tempoIntervalo = datetime.datetime.utcfromtimestamp(evento['time_completed']) + timedelta(minutes=10)
+                        print (passosIntervalo)
+                        passosIntervalo = 0
+                        #salvar coisas aqui no BD
+                    #if 'steps' in dadosNedelDetalhes['data']['items'][j].keys():
+                    passosIntervalo = passosIntervalo + evento['steps']
+                    print(str(passosIntervalo) + ' ' +str(datetime.datetime.utcfromtimestamp(evento['time_completed'] )))
+                    #print(dadosNedelDetalhes['data']['items'][j].keys())
+                    #print(dadosNedelDetalhes['data']['items'][j])
+
+        if 'links' in dadosNedelDetalhes['data'].keys():
+            url = 'https://jawbone.com' + dadosNedelDetalhes['data']['links']['next']
         else: 
-            print(information)
+            #print(information)
             return information
 
 
@@ -145,7 +164,7 @@ def jawboneSleep(client_id,client_secret):
     #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
     #data = (urllib.request.urlopen(request).read().decode(encoding))
     #dadosNedel = json.loads(data)
-    print (params["refresh_token"])
+    #print (params["refresh_token"])
     #json.dump(data,arquivo)
 
 
@@ -163,7 +182,7 @@ def jawboneSleep(client_id,client_secret):
     #else:
         
         
-        print ("Requisitando acesso aos dados")
+        print ("Requisitando acesso aos dados Sleep")
         request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
         response = urllib.request.urlopen(request).getcode()
         if response !=200:
@@ -193,9 +212,80 @@ def jawboneSleep(client_id,client_secret):
         if 'links' in dadosNedel['data'].keys():
             url = 'https://jawbone.com' + dadosNedel['data']['links']['next']
         else: 
-            print(information)
+            #print(information)
             return information
 
+def jawboneHeart(client_id,client_secret):
+
+    params = {
+        "response_type=code" : 'code',
+          "client_id": client_id,
+          'scope': 'basic_read extended_read location_read move_read',
+          'redirect_uri' : ''
+        }
+    url = "https://jawbone.com/auth/oauth2/token"
+    request = urllib.request.Request(url, headers = params)
+    #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+    #data = (urllib.request.urlopen(request).read().decode(encoding))
+
+
+    information = []
+    #arquivo = open('newToken.txt' , 'w+')
+    params = {
+          "client_id": client_id,
+          "client_secret": client_secret,
+          "grant_type": 'refresh_token',
+          "refresh_token": ''
+        }
+    url = "https://jawbone.com/auth/oauth2/token"
+    request = urllib.request.Request(url, headers = params)
+    #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+    #data = (urllib.request.urlopen(request).read().decode(encoding))
+    #dadosNedel = json.loads(data)
+    #print (params["refresh_token"])
+    #json.dump(data,arquivo)
+
+
+    #arquivo = open('nedelJawbone.txt', 'w')
+    #de setembro 2015 até outubro 2015
+    url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/heartrates?start_time=1441065600&&end_time=1446336000'
+    #dois dias
+    #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
+    while(1):
+    #cidade  =  input("Digite o nome da cidade procurada: ")
+    #cidade = cidade.split(' ')
+
+    #if len(cidade) >  2:
+    #    url = 'http://api.openweathermap.org/data/2.5/find?q=' + cidade[0] + '%20' + cidade[1] +  '&APPID=c202fefe29158aebc3cd656900708e87'
+    #else:
+        
+        
+        print ("Requisitando acesso aos dados Heart Rate")
+        request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
+        response = urllib.request.urlopen(request).getcode()
+        if response !=200:
+            break
+        print("Baixando dados")
+        print("Baixados")
+
+
+
+        encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+        data = (urllib.request.urlopen(request).read().decode(encoding))
+        dadosNedel = json.loads(data)
+        
+        #json.dump(dadosNedel,arquivo)
+
+        for evento in dadosNedel['data']['items']:
+            print(evento['date'])
+            #aqui o information vai ter todos os ticks de um "move"
+            information.append(dadosNedel)
+
+        if 'links' in dadosNedel['data'].keys():
+            url = 'https://jawbone.com' + dadosNedel['data']['links']['next']
+        else: 
+            #print(information)
+            return information
 
 
 #SQL /////////////////////////////////////////////////////////////////////////////////////////////

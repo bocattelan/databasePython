@@ -26,7 +26,7 @@ except:
     print ("I am unable to connect to the database")
 
 if not existsTable('test',cur):
-    cur.execute("CREATE TABLE test (id serial PRIMARY KEY, cidade varchar, temperatura float);")
+    cur.execute("CREATE TABLE activities (id serial PRIMARY KEY, datetime datetime, person_id int, created_at datetime,updated_at datetime);")
     print('New table created')
 
 
@@ -37,8 +37,9 @@ if not existsTable('test',cur):
 
 
 
-#jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
-jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
+jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450','activities',cur)
+#jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
+#jawboneHeart('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 #horaTeste = datetime.datetime.now() + timedelta(hours=1)
 horaTeste = datetime.datetime.now() + timedelta(minutes=0)
 
