@@ -25,7 +25,7 @@ try:
 except:
     print ("I am unable to connect to the database")
 
-deleteTable('activities',cur)
+#deleteTable('activities',cur)
 if not existsTable('activities',cur):
     cur.execute("CREATE TABLE activities (id serial PRIMARY KEY, datetime timestamp,activity int, person_id int, created_at timestamp,updated_at timestamp);")
     print('New table created')

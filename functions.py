@@ -11,6 +11,7 @@ import urllib.request
 import json
 import time
 import datetime
+import calendar
 import sched
 from datetime import timedelta
 import sys
@@ -69,7 +70,11 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
 
     #arquivo = open('nedelJawbone.txt', 'w')
     #de setembro 2015 até outubro 2015
-    url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=1441065600&&end_time=1446336000'
+    lastDate = getLastDate(tableName,cur)
+    if lastDate[0][0] < datetime.datetime.now(): 
+        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
+    else:
+        return print('up to date')
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
     while(1):
@@ -119,17 +124,19 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
                     if datetime.datetime.utcfromtimestamp(evento['time_completed']) > tempoIntervalo:
                         addMoveElement(tableName,[tempoIntervalo,passosIntervalo,person_id,datetime.datetime.now(),datetime.datetime.now()],cur)
                         tempoIntervalo = datetime.datetime.utcfromtimestamp(evento['time_completed']) + timedelta(minutes=10)
-                        print (passosIntervalo)
+                        #print (passosIntervalo)
                         passosIntervalo = 0
                         #salvar coisas aqui no BD
+
                     #if 'steps' in dadosNedelDetalhes['data']['items'][j].keys():
                     passosIntervalo = passosIntervalo + evento['steps']
-                    print(str(passosIntervalo) + ' ' +str(datetime.datetime.utcfromtimestamp(evento['time_completed'] )))
+                    #print(str(passosIntervalo) + ' ' +str(datetime.datetime.utcfromtimestamp(evento['time_completed'] )))
                     #print(dadosNedelDetalhes['data']['items'][j].keys())
                     #print(dadosNedelDetalhes['data']['items'][j])
 
-        if 'links' in dadosNedelDetalhes['data'].keys():
-            url = 'https://jawbone.com' + dadosNedelDetalhes['data']['links']['next']
+        if 'links' in dadosNedel['data'].keys():
+            url = 'https://jawbone.com' + dadosNedel['data']['links']['next']
+            #print('continuando')
         else: 
             #print(information)
             printTable(tableName,cur)
@@ -318,3 +325,7 @@ def deleteTable(tableName,cur):
         cur.execute("DROP TABLE " + tableName + " ;")
         print("Table '"+ tableName +"' deleted")
 
+def getLastDate(tableName,cur):
+    if existsTable(tableName,cur):
+        cur.execute("SELECT MAX(datetime) FROM " + tableName + ";")
+        return cur.fetchall()
