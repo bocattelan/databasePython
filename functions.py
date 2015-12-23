@@ -17,10 +17,12 @@ from datetime import timedelta
 import sys
 
 #pega os dados de uma cidade
-def weather (cidadeInput, internetConnection):
-    cidade = cidadeInput 
-    cidade = cidade.split(' ')
-    if internetConnection:
+def weather (cidadeInput, person_id,tableName,cur):
+    #  id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
+    lastDate = getLastDate(tableName,cur)
+    if lastDate[0][0] is None or lastDate[0][0].date() < datetime.datetime.now().date(): 
+        cidade = cidadeInput 
+        cidade = cidade.split(' ')
         if len(cidade) >=  2:
             url = 'http://api.openweathermap.org/data/2.5/find?q=' + cidade[0] + '%20' + cidade[1] +  '&APPID=c202fefe29158aebc3cd656900708e87&units=metric'
         else:
@@ -30,10 +32,12 @@ def weather (cidadeInput, internetConnection):
         encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosTempo = json.loads(data)
-        print (dadosTempo)
-        return [dadosTempo['list'][0]['dt'],dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min'],'-','-','-','-']#dadosTempo['list'][0]['rain']['3h'] ]
+        addWeatherElements('weathers',[datetime.datetime.now(),dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min'],dadosTempo['list'][0]['main']['humidity'],dadosTempo['list'][0]['weather'][0]['main'],person_id, datetime.datetime.now(), datetime.datetime.now()], cur)
     else:
-        return ['-']
+        return print('Weathers up to date')
+        #print (dadosTempo)
+    #return [dadosTempo['list'][0]['dt'],dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min'],'-','-','-','-']#dadosTempo['list'][0]['rain']['3h'] ]
+    #return ['-']
 
 #JAWBONE /////////////\\\\\\\\\\\\\\\\\//////////////////\\\\\\\\\\\\\\\\\\\//////////////////
 #pega os dados de uma pessoa
@@ -71,10 +75,10 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
     #arquivo = open('nedelJawbone.txt', 'w')
     #de setembro 2015 até outubro 2015
     lastDate = getLastDate(tableName,cur)
-    if lastDate[0][0] < datetime.datetime.now(): 
+    if lastDate[0][0] is None or lastDate[0][0].date() < datetime.datetime.now().date(): 
         url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
     else:
-        return print('up to date')
+        return print('Jawbone Moves up to date')
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
     while(1):
@@ -139,7 +143,7 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
             #print('continuando')
         else: 
             #print(information)
-            printTable(tableName,cur)
+            #printTable(tableName,cur)
             return information
 
 
@@ -313,7 +317,7 @@ def printTable(tableName,cur):
 def addWeatherElements(tableName,elements,cur):
     if existsTable(tableName,cur):
         query = "INSERT INTO " + tableName
-        cur.execute(query + "(cidade, temperatura) VALUES (%s, %s)",elements)
+        cur.execute(query + "(date, max_temperature,mean_temperature,min_temperature,precipitation,events,person_id,created_at,updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",elements)
 
 def addMoveElement(tableName,element,cur):
     if existsTable(tableName,cur):
@@ -326,6 +330,9 @@ def deleteTable(tableName,cur):
         print("Table '"+ tableName +"' deleted")
 
 def getLastDate(tableName,cur):
-    if existsTable(tableName,cur):
+    if existsTable(tableName,cur) and tableName == 'activities':
         cur.execute("SELECT MAX(datetime) FROM " + tableName + ";")
+        return cur.fetchall()
+    elif existsTable(tableName,cur) and tableName == 'weathers':
+        cur.execute("SELECT MAX(date) FROM " + tableName + ";")
         return cur.fetchall()

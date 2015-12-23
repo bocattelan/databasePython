@@ -30,6 +30,10 @@ if not existsTable('activities',cur):
     cur.execute("CREATE TABLE activities (id serial PRIMARY KEY, datetime timestamp,activity int, person_id int, created_at timestamp,updated_at timestamp);")
     print('New table created')
 
+if not existsTable('weathers',cur):
+    cur.execute("CREATE TABLE weathers (id serial PRIMARY KEY, date timestamp,max_temperature int, mean_temperature int, min_temperature int, precipitation int, events varchar(255), person_id int,  created_at timestamp,updated_at timestamp);")
+    print('New table created')
+
 
 #deleteTable("test",cur)
 
@@ -39,6 +43,7 @@ if not existsTable('activities',cur):
 
 
 jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450',1,'activities',cur)
+weather('porto alegre', 1,'weathers',cur)
 conn.commit()
 #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 #jawboneHeart('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
@@ -59,9 +64,9 @@ while True:
     #####
     if datetime.datetime.now().minute == horaTeste.minute:
         #try:
-        data = weather('porto alegre', True)
-        linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao: ' + str(data[4]) + '\nEventos: ' + '\nperson_id(?): ' + '\nCreated At: ' + '\nUpdated At: ' #melhor forma de fazer isso?
-        print  (linha)
+        #data = weather('porto alegre', True)
+        #linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao: ' + str(data[4]) + '\nEventos: ' + '\nperson_id(?): ' + '\nCreated At: ' + '\nUpdated At: ' #melhor forma de fazer isso?
+        #print  (linha)
         #addWeatherElements('test',weather('porto alegre',True))
         
         #horaTeste = datetime.datetime.now() + timedelta(hours=1)
