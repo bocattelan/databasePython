@@ -43,9 +43,9 @@ if not existsTable('weathers',cur):
 
 
 jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450',1,'activities',cur)
+jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 weather('porto alegre', 1,'weathers',cur)
 conn.commit()
-#jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 #jawboneHeart('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
 #horaTeste = datetime.datetime.now() + timedelta(hours=1)
 horaTeste = datetime.datetime.now() + timedelta(minutes=0)
