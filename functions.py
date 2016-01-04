@@ -16,6 +16,31 @@ import sched
 from datetime import timedelta
 import sys
 
+def foursquare (client_secret):
+    #nedel eh 21
+    # id  |      datetime       |                             name                              |         city         |    country    |                 latitude                 |                longitude                 | person_id |         created_at         |         updated_at
+
+    #OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U
+
+    url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U" + "&sort=oldestfirst" + "&beforeTimestamp=1451926738" + "&v=20140806&m=foursquare"
+    request = urllib.request.Request(url)
+    encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+    data = (urllib.request.urlopen(request).read().decode(encoding))
+    dadosNedel = json.loads(data)
+    for checkin in dadosNedel['response']['checkins']["items"]:
+        print(checkin["createdAt"])
+    lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"]
+
+    while(len(dadosNedel['response']['checkins']["items"])!=0):
+        url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U" + "&sort=oldestfirst" + "&afterTimestamp=" + str(lastDateGot) + "&v=20140806&m=foursquare"
+        request = urllib.request.Request(url)
+        encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+        data = (urllib.request.urlopen(request).read().decode(encoding))
+        dadosNedel = json.loads(data)
+        for checkin in dadosNedel['response']['checkins']["items"]:
+            print(checkin["createdAt"])
+        lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"]
+
 #pega os dados de uma cidade
 def weather (cidadeInput, person_id,tableName,cur):
     #  id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
@@ -323,6 +348,13 @@ def addMoveElement(tableName,element,cur):
     if existsTable(tableName,cur):
         query = "INSERT INTO " + tableName
         cur.execute(query + "(datetime, activity,person_id,created_at, updated_at) VALUES (%s, %s,%s,%s,%s)",element)
+
+def addFoursquareElement(tableName,element,cur):
+    if existsTable(tableName,cur):
+        query = "INSERT INTO " + tableName
+        cur.execute(query + "(datetime, name,city,country,latitude,longitude,person_id,created_at,updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",elements)
+ # id  |      datetime       |                             name                              |         city         |    country    |                 latitude                 |                longitude                 | person_id |         created_at         |         updated_at
+
 
 def deleteTable(tableName,cur):
     if existsTable(tableName,cur):
