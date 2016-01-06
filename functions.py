@@ -16,19 +16,25 @@ import sched
 from datetime import timedelta
 import sys
 
-def foursquare (client_secret):
+def foursquare (client_secret,client_id,tableName,cur,conn):
     #nedel eh 21
     # id  |      datetime       |                             name                              |         city         |    country    |                 latitude                 |                longitude                 | person_id |         created_at         |         updated_at
 
     #OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U
 
-    url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U" + "&sort=oldestfirst" + "&beforeTimestamp=1451926738" + "&v=20140806&m=foursquare"
+    url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=" + client_secret + "&sort=oldestfirst" + "&beforeTimestamp=1451926738" + "&v=20140806&m=foursquare"
     request = urllib.request.Request(url)
     encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
     data = (urllib.request.urlopen(request).read().decode(encoding))
     dadosNedel = json.loads(data)
+    lastDate = getLastDate(tableName,cur)
+    
     for checkin in dadosNedel['response']['checkins']["items"]:
-        print(checkin["createdAt"])
+        print('oi')
+        if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
+            addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+            conn.commit()
+            #print(checkin)
     lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"]
 
     while(len(dadosNedel['response']['checkins']["items"])!=0):
@@ -37,8 +43,12 @@ def foursquare (client_secret):
         encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosNedel = json.loads(data)
+        lastDate = getLastDate(tableName,cur)
         for checkin in dadosNedel['response']['checkins']["items"]:
-            print(checkin["createdAt"])
+            if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
+                addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+                conn.commit()
+                #print(str(checkin) + '\n')
         lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"]
 
 #pega os dados de uma cidade
@@ -352,7 +362,7 @@ def addMoveElement(tableName,element,cur):
 def addFoursquareElement(tableName,element,cur):
     if existsTable(tableName,cur):
         query = "INSERT INTO " + tableName
-        cur.execute(query + "(datetime, name,city,country,latitude,longitude,person_id,created_at,updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",elements)
+        cur.execute(query + "(datetime, name,city,country,latitude,longitude,person_id,created_at,updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",element)
  # id  |      datetime       |                             name                              |         city         |    country    |                 latitude                 |                longitude                 | person_id |         created_at         |         updated_at
 
 
@@ -362,7 +372,7 @@ def deleteTable(tableName,cur):
         print("Table '"+ tableName +"' deleted")
 
 def getLastDate(tableName,cur):
-    if existsTable(tableName,cur) and tableName == 'activities':
+    if existsTable(tableName,cur) and tableName == 'activities' or 'locations':
         cur.execute("SELECT MAX(datetime) FROM " + tableName + ";")
         return cur.fetchall()
     elif existsTable(tableName,cur) and tableName == 'weathers':
