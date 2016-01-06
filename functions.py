@@ -21,35 +21,52 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
     # id  |      datetime       |                             name                              |         city         |    country    |                 latitude                 |                longitude                 | person_id |         created_at         |         updated_at
 
     #OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U
-
-    url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=" + client_secret + "&sort=oldestfirst" + "&beforeTimestamp=1451926738" + "&v=20140806&m=foursquare"
-    request = urllib.request.Request(url)
-    encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
-    data = (urllib.request.urlopen(request).read().decode(encoding))
-    dadosNedel = json.loads(data)
-    lastDate = getLastDate(tableName,cur)
-    
-    for checkin in dadosNedel['response']['checkins']["items"]:
-        print('oi')
-        if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
-            addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-            conn.commit()
-            #print(checkin)
-    lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"]
-
-    while(len(dadosNedel['response']['checkins']["items"])!=0):
-        url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U" + "&sort=oldestfirst" + "&afterTimestamp=" + str(lastDateGot) + "&v=20140806&m=foursquare"
+    try:
+        url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=" + client_secret + "&sort=oldestfirst" + "&beforeTimestamp=1451926738" + "&v=20140806&m=foursquare"
         request = urllib.request.Request(url)
         encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosNedel = json.loads(data)
         lastDate = getLastDate(tableName,cur)
+    except:
+        print("ACCSSES DENIED")
+        return
+    
+    for checkin in dadosNedel['response']['checkins']["items"]:
+        #print('oi')
+        if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
+            addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+            #print(checkin)
+    lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"] - 3000
+
+    while(len(dadosNedel['response']['checkins']["items"])!=0 and  lastDate[0][0].date() < datetime.datetime.now().date() ):
+        try:
+            url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U" + "&sort=oldestfirst" + "&afterTimestamp=" + str(lastDateGot) + "&v=20140806&m=foursquare"
+            request = urllib.request.Request(url)
+            encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+            data = (urllib.request.urlopen(request).read().decode(encoding))
+            dadosNedel = json.loads(data)
+            lastDate = getLastDate(tableName,cur)
+        except:
+            print("ACCSSES DENIED")
+            break
         for checkin in dadosNedel['response']['checkins']["items"]:
             if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
-                addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-                conn.commit()
-                #print(str(checkin) + '\n')
-        lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"]
+                if 'location' in checkin.keys():
+                    print('oi')
+                    addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+                    conn.commit()
+                elif 'venue' in checkin.keys() and 'name' in checkin.keys():
+                    #print(checkin)
+                    #print('\n')
+                    print('ola')
+                    addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['venue']['location']['name'],checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+                else:
+                     addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),'-',checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+                 #   print(checkin)
+                  #  print('\n')
+        lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"] - 3000
+        print('updated')
 
 #pega os dados de uma cidade
 def weather (cidadeInput, person_id,tableName,cur):

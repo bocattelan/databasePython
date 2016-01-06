@@ -63,9 +63,11 @@ while True:
     #if datetime.now().hour == horaTeste.hour:
 
     #apenas para teste, conta o tempo na tela
-    sys.stdout.write('\r' + str(datetime.datetime.now().second))
+    sys.stdout.write('\r' + str(datetime.datetime.now().minute))
     #####
-    if datetime.datetime.now().minute == horaTeste.minute:
+    if datetime.datetime.now().hour == horaTeste.hour:
+        foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
+        conn.commit()
         #try:
         #data = weather('porto alegre', True)
         #linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao: ' + str(data[4]) + '\nEventos: ' + '\nperson_id(?): ' + '\nCreated At: ' + '\nUpdated At: ' #melhor forma de fazer isso?
@@ -73,7 +75,7 @@ while True:
         #addWeatherElements('test',weather('porto alegre',True))
         
         #horaTeste = datetime.datetime.now() + timedelta(hours=1)
-        horaTeste = datetime.datetime.now() + timedelta(minutes=1)
+        horaTeste = datetime.datetime.now() + timedelta(hours=1)
             
             #conn.commit()
         #except:
