@@ -29,7 +29,7 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
         dadosNedel = json.loads(data)
         lastDate = getLastDate(tableName,cur)
     except:
-        print("ACCSSES DENIED")
+        print("ACCSSES DENIED to foursquare")
         return
     
     for checkin in dadosNedel['response']['checkins']["items"]:
@@ -48,7 +48,7 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
             dadosNedel = json.loads(data)
             lastDate = getLastDate(tableName,cur)
         except:
-            print("ACCSSES DENIED")
+            print("ACCSSES DENIED to foursquare")
             break
         for checkin in dadosNedel['response']['checkins']["items"]:
             if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
@@ -74,9 +74,9 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
                         print('ERRO BIZARRO')
                   #  print('\n')
         lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"] - 3000
-    print('updated')
+    print('Foursquare updated')
 
-#pega os dados de uma cidade
+#pega os dados de uma cidade NO MOMENTO
 def weather (cidadeInput, person_id,tableName,cur):
     #  id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
     lastDate = getLastDate(tableName,cur)
@@ -93,6 +93,7 @@ def weather (cidadeInput, person_id,tableName,cur):
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosTempo = json.loads(data)
         addWeatherElements('weathers',[datetime.datetime.now(),dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min'],dadosTempo['list'][0]['main']['humidity'],dadosTempo['list'][0]['weather'][0]['main'],person_id, datetime.datetime.now(), datetime.datetime.now()], cur)
+        print("Weathers updated")
     else:
         return print('Weathers up to date')
         #print (dadosTempo)
@@ -204,6 +205,7 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
         else: 
             #print(information)
             #printTable(tableName,cur)
+            print('Jawbone Moves updated')
             return information
 
 
@@ -397,7 +399,7 @@ def deleteTable(tableName,cur):
         print("Table '"+ tableName +"' deleted")
 
 def getLastDate(tableName,cur):
-    if existsTable(tableName,cur) and tableName == 'activities' or 'locations':
+    if existsTable(tableName,cur) and tableName == 'activities' or tableName == 'locations':
         cur.execute("SELECT MAX(datetime) FROM " + tableName + ";")
         return cur.fetchall()
     elif existsTable(tableName,cur) and tableName == 'weathers':
