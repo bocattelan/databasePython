@@ -36,12 +36,12 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
         #print('oi')
         if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
             addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-            #print(checkin)
+            print('element added')
     lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"] - 3000
 
     while(len(dadosNedel['response']['checkins']["items"])!=0 and  lastDate[0][0].date() < datetime.datetime.now().date() ):
         try:
-            url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U" + "&sort=oldestfirst" + "&afterTimestamp=" + str(lastDateGot) + "&v=20140806&m=foursquare"
+            url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=" + client_secret + "&sort=oldestfirst" + "&afterTimestamp=" + str(lastDateGot) + "&v=20140806&m=foursquare"
             request = urllib.request.Request(url)
             encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
             data = (urllib.request.urlopen(request).read().decode(encoding))
@@ -52,21 +52,29 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
             break
         for checkin in dadosNedel['response']['checkins']["items"]:
             if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
-                if 'location' in checkin.keys():
-                    print('oi')
-                    addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-                    conn.commit()
-                elif 'venue' in checkin.keys() and 'name' in checkin.keys():
-                    #print(checkin)
-                    #print('\n')
-                    print('ola')
-                    addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['venue']['location']['name'],checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-                else:
-                     addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),'-',checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-                 #   print(checkin)
+                try:
+                    if 'location' in checkin.keys():
+                        print('oi')
+                        addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+                        print('element added')
+                        #conn.commit()
+                    elif 'venue' in checkin.keys() and 'name' in checkin['venue'].keys():
+                        #print(checkin)
+                        #print('\n')
+                        print('ola')
+                        addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['venue']['name'],checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+                        print('element added')
+                    elif 'venue' in checkin.keys():
+                        addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),'',checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
+                        #print(checkin)
+                except:
+                    try:
+                        print(checkin)
+                    except:
+                        print('ERRO BIZARRO')
                   #  print('\n')
         lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"] - 3000
-        print('updated')
+    print('updated')
 
 #pega os dados de uma cidade
 def weather (cidadeInput, person_id,tableName,cur):
