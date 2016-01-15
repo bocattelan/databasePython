@@ -53,7 +53,7 @@ if not existsTable('locations',cur):
 #horaTeste = datetime.datetime.now() + timedelta(hours=1)
 horaTeste = datetime.datetime.now() + timedelta(minutes=0)
 
-#chamar as funçõs no laço, dentro do try/exept
+
 
 while True:
     #yesterday = datetime.datetime(2015, 5, 12, 23, 30)
