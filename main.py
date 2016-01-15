@@ -71,34 +71,7 @@ while True:
 #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
         weather('porto alegre', 1,'weathers',cur)
         conn.commit()
-        #try:
-        #data = weather('porto alegre', True)
-        #linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao: ' + str(data[4]) + '\nEventos: ' + '\nperson_id(?): ' + '\nCreated At: ' + '\nUpdated At: ' #melhor forma de fazer isso?
-        #print  (linha)
-        #addWeatherElements('test',weather('porto alegre',True))
-        
-        #horaTeste = datetime.datetime.now() + timedelta(hours=1)
+       
         horaTeste = datetime.datetime.now() + timedelta(hours=1)
     sys.stdout.write('\r' + str(datetime.datetime.now().time()))
-            
-            #conn.commit()
-        #except:
-         #   print ("Fail to connect") 
-         #   data = weather('porto alegre', False)
-         #   linha = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')+ ';' + data[0] + ';' + data[1] #melhor forma de fazer isso?
-         #   print  (linha)
-            #addWeatherElements('test',weather('porto alegre',False))
-            #horaTeste = datetime.datetime.now() + timedelta(hours=1)
-         #   horaTeste = datetime.datetime.now() + timedelta(minutes=1)
-            
-            #conn.commit()
-    #time.sleep(60) #levar em conta o tempo para baixar os dados? (simultaneamente ou um depois do outro?)
-   # id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
-
-
-
-
-
-
-
-#print(weather('porto alegre',True))
+         
