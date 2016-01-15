@@ -6,7 +6,7 @@
 
 
 import psycopg2
-import urllib.parse
+from urlparse import urlparse
 import urllib.request
 import json
 import time
