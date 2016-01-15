@@ -130,7 +130,7 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
 
 
     #arquivo = open('nedelJawbone.txt', 'w')
-    #de setembro 2015 até outubro 2015
+   
     lastDate = getLastDate(tableName,cur)
     if lastDate[0][0] is not None and lastDate[0][0].date() < datetime.datetime.now().date(): 
         url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
