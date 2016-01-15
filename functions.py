@@ -238,7 +238,7 @@ def jawboneSleep(client_id,client_secret):
 
 
     #arquivo = open('nedelJawbone.txt', 'w')
-    #de setembro 2015 até outubro 2015
+
     url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1446336000'
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
@@ -314,7 +314,7 @@ def jawboneHeart(client_id,client_secret):
 
 
     #arquivo = open('nedelJawbone.txt', 'w')
-    #de setembro 2015 até outubro 2015
+
     url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/heartrates?start_time=1441065600&&end_time=1446336000'
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
