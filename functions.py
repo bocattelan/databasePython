@@ -6,7 +6,7 @@
 
 
 import psycopg2
-from urlparse import urlparse
+import urllib.parse
 import urllib.request
 import json
 import time
@@ -29,13 +29,14 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
         dadosNedel = json.loads(data)
         lastDate = getLastDate(tableName,cur)
     except:
+        print("ACCSSES DENIED to foursquare")
         return
     
     for checkin in dadosNedel['response']['checkins']["items"]:
         #print('oi')
         if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
             addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-
+            print('element added')
     lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"] - 3000
 
     while(len(dadosNedel['response']['checkins']["items"])!=0 and  lastDate[0][0].date() < datetime.datetime.now().date() ):
@@ -47,31 +48,33 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
             dadosNedel = json.loads(data)
             lastDate = getLastDate(tableName,cur)
         except:
-
+            print("ACCSSES DENIED to foursquare")
             break
         for checkin in dadosNedel['response']['checkins']["items"]:
             if lastDate[0][0].date() < datetime.datetime.fromtimestamp(checkin['createdAt']).date():
                 try:
                     if 'location' in checkin.keys():
-       
+                        print('oi')
                         addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['location']['name'],checkin['location']['city'],checkin['location']['country'],checkin['location']['lat'],checkin['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-         
+                        print('element added')
                         #conn.commit()
                     elif 'venue' in checkin.keys() and 'name' in checkin['venue'].keys():
                         #print(checkin)
                         #print('\n')
-               
+                        print('ola')
                         addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),checkin['venue']['name'],checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
-                
+                        print('element added')
                     elif 'venue' in checkin.keys():
                         addFoursquareElement(tableName,[datetime.datetime.fromtimestamp(checkin['createdAt']),'',checkin['venue']['location']['city'],checkin['venue']['location']['country'],checkin['venue']['location']['lat'],checkin['venue']['location']['lng'],client_id,datetime.datetime.now(), datetime.datetime.now()],cur)
                         #print(checkin)
                 except:
-                    a=2
-           
+                    try:
+                        print(checkin)
+                    except:
+                        print('ERRO BIZARRO')
                   #  print('\n')
         lastDateGot = dadosNedel['response']['checkins']["items"][-1]["createdAt"] - 3000
-
+    print('Foursquare updated')
 
 #pega os dados de uma cidade NO MOMENTO
 def weather (cidadeInput, person_id,tableName,cur):
@@ -90,8 +93,9 @@ def weather (cidadeInput, person_id,tableName,cur):
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosTempo = json.loads(data)
         addWeatherElements('weathers',[datetime.datetime.now(),dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min'],dadosTempo['list'][0]['main']['humidity'],dadosTempo['list'][0]['weather'][0]['main'],person_id, datetime.datetime.now(), datetime.datetime.now()], cur)
+        print("Weathers updated")
     else:
-        return 
+        return print('Weathers up to date')
         #print (dadosTempo)
     #return [dadosTempo['list'][0]['dt'],dadosTempo['list'][0]['main']['temp_max'],dadosTempo['list'][0]['main']['temp'],dadosTempo['list'][0]['main']['temp_min'],'-','-','-','-']#dadosTempo['list'][0]['rain']['3h'] ]
     #return ['-']
@@ -130,12 +134,12 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
 
 
     #arquivo = open('nedelJawbone.txt', 'w')
-   
+    #de setembro 2015 até outubro 2015
     lastDate = getLastDate(tableName,cur)
     if lastDate[0][0] is not None and lastDate[0][0].date() < datetime.datetime.now().date(): 
         url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
     else:
-        return 
+        return print('Jawbone Moves up to date')
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
     while(1):
@@ -147,12 +151,13 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
     #else:
         
         
-
+        print ("Requisitando acesso aos dados Moves")
         request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
         response = urllib.request.urlopen(request).getcode()
         if response !=200:
             break
-
+        print("Baixando dados")
+        print("Baixados")
 
 
 
@@ -163,6 +168,7 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
         #json.dump(dadosNedel,arquivo)
 
         for evento in dadosNedel['data']['items']:
+            print(evento['date'])
             urlTicks = 'https://jawbone.com/nudge/api/v.1.1/moves/' + evento['xid'] + '/ticks'
             requestTicks = urllib.request.Request(urlTicks, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
             responseTicks = urllib.request.urlopen(requestTicks).getcode()
@@ -199,7 +205,7 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
         else: 
             #print(information)
             #printTable(tableName,cur)
-
+            print('Jawbone Moves updated')
             return information
 
 
@@ -238,7 +244,7 @@ def jawboneSleep(client_id,client_secret):
 
 
     #arquivo = open('nedelJawbone.txt', 'w')
-
+    #de setembro 2015 até outubro 2015
     url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1446336000'
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
@@ -251,11 +257,13 @@ def jawboneSleep(client_id,client_secret):
     #else:
         
         
- 
+        print ("Requisitando acesso aos dados Sleep")
         request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
         response = urllib.request.urlopen(request).getcode()
         if response !=200:
             break
+        print("Baixando dados")
+        print("Baixados")
 
 
 
@@ -266,7 +274,7 @@ def jawboneSleep(client_id,client_secret):
         #json.dump(dadosNedel,arquivo)
 
         for evento in dadosNedel['data']['items']:
-
+            print(evento['date'])
             urlTicks = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves/' + evento['xid'] + '/ticks'
             request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
             response = urllib.request.urlopen(request).getcode()
@@ -314,7 +322,7 @@ def jawboneHeart(client_id,client_secret):
 
 
     #arquivo = open('nedelJawbone.txt', 'w')
-
+    #de setembro 2015 até outubro 2015
     url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/heartrates?start_time=1441065600&&end_time=1446336000'
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
@@ -327,12 +335,13 @@ def jawboneHeart(client_id,client_secret):
     #else:
         
         
-
+        print ("Requisitando acesso aos dados Heart Rate")
         request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
         response = urllib.request.urlopen(request).getcode()
         if response !=200:
             break
-
+        print("Baixando dados")
+        print("Baixados")
 
 
 
@@ -343,7 +352,7 @@ def jawboneHeart(client_id,client_secret):
         #json.dump(dadosNedel,arquivo)
 
         for evento in dadosNedel['data']['items']:
-        
+            print(evento['date'])
             #aqui o information vai ter todos os ticks de um "move"
             information.append(dadosNedel)
 
@@ -360,12 +369,12 @@ def existsTable(tableName,cur):
     cur.execute("select exists(select * from information_schema.tables where table_name=%s)", (tableName,))
     return cur.fetchone()[0]
 
-#def printTable(tableName,cur):
- #   if existsTable(tableName,cur):
-  #      cur.execute("SELECT * FROM " + tableName)
-   #     cur.fetchone()
-    #    for row in cur:
-     #       print(row)
+def printTable(tableName,cur):
+    if existsTable(tableName,cur):
+        cur.execute("SELECT * FROM " + tableName)
+        cur.fetchone()
+        for row in cur:
+            print(row)
 #dado um nome de tabela e um json ele salva na tabela
 def addWeatherElements(tableName,elements,cur):
     if existsTable(tableName,cur):
@@ -387,7 +396,7 @@ def addFoursquareElement(tableName,element,cur):
 def deleteTable(tableName,cur):
     if existsTable(tableName,cur):
         cur.execute("DROP TABLE " + tableName + " ;")
-
+        print("Table '"+ tableName +"' deleted")
 
 def getLastDate(tableName,cur):
     if existsTable(tableName,cur) and tableName == 'activities' or tableName == 'locations':
