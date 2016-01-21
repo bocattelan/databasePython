@@ -405,6 +405,6 @@ def getLastDate(tableName,cur):
         return cur.fetchall()
 
 def getPeopleList(cur):
-    if existsTable('weathers',cur):
-        cur.execute("SELECT * FROM weathers;")
+    if existsTable('people',cur):
+        cur.execute("SELECT * FROM people;")
         return cur.fetchall()
