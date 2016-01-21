@@ -21,6 +21,7 @@ import sys
 
 try:
     conn = psycopg2.connect("dbname=everydayvis_development user=postgres host=localhost")
+    #conn = psycopg2.connect("dbname=postgres user=postgres host=localhost password=cattelan")
     cur = conn.cursor()
 except:
     print ("I am unable to connect to the database")
@@ -44,13 +45,6 @@ if not existsTable('locations',cur):
 
 
 
-#foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
-#jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450',1,'activities',cur)
-#jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
-#weather('porto alegre', 1,'weathers',cur)
-#conn.commit()
-#jawboneHeart('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
-#horaTeste = datetime.datetime.now() + timedelta(hours=1)
 horaTeste = datetime.datetime.now() + timedelta(minutes=0)
 
 #chamar as funçõs no laço, dentro do try/exept
@@ -65,42 +59,23 @@ while True:
     #apenas para teste, conta o tempo na tela
     
     #####
+    peopleList = getPeopleList(cur)
+    print (peopleList[0][0])
     if datetime.datetime.now().minute == horaTeste.minute:
-        foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
-        conn.commit()
-        jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450',1,'activities',cur)
-        conn.commit()
-#jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
-        weather('porto alegre', 1,'weathers',cur)
-        conn.commit()
-        #try:
-        #data = weather('porto alegre', True)
-        #linha = '\nData:' + str(datetime.datetime.utcfromtimestamp(data[0])) + '\nMaior Temperatura: ' + str(data[1]) +'\nTemperatura Média(ATUAL): ' + str(data[2]) + '\nMenor Temperatura: ' + str(data[3]) + '\nPrecipitacao: ' + str(data[4]) + '\nEventos: ' + '\nperson_id(?): ' + '\nCreated At: ' + '\nUpdated At: ' #melhor forma de fazer isso?
-        #print  (linha)
-        #addWeatherElements('test',weather('porto alegre',True))
-        
-        #horaTeste = datetime.datetime.now() + timedelta(hours=1)
+
+        for person in peopleList:
+            #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
+            print(person[3])
+            if len(person[11]) > 0:
+                foursquare(person[11],person[0], 'locations',cur,conn)
+                conn.commit()
+                #jawboneMoves('oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP',1,'activities',cur)
+            if len(person[9]) > 0:
+                jawboneMoves(person[9],person[0],'activities',cur)
+                conn.commit()
+    #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
+            weather('porto alegre','','weathers',cur)
+            conn.commit()
+
         horaTeste = datetime.datetime.now() + timedelta(minutes=1)
     sys.stdout.write('\r' + str(datetime.datetime.now()))
-            
-            #conn.commit()
-        #except:
-         #   print ("Fail to connect") 
-         #   data = weather('porto alegre', False)
-         #   linha = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')+ ';' + data[0] + ';' + data[1] #melhor forma de fazer isso?
-         #   print  (linha)
-            #addWeatherElements('test',weather('porto alegre',False))
-            #horaTeste = datetime.datetime.now() + timedelta(hours=1)
-         #   horaTeste = datetime.datetime.now() + timedelta(minutes=1)
-            
-            #conn.commit()
-    #time.sleep(60) #levar em conta o tempo para baixar os dados? (simultaneamente ou um depois do outro?)
-   # id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
-
-
-
-
-
-
-
-#print(weather('porto alegre',True))

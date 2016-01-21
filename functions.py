@@ -81,7 +81,7 @@ def weather (cidadeInput, person_id,tableName,cur):
     #  id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
     lastDate = getLastDate(tableName,cur)
     if lastDate[0][0] != None:
-        if lastDate[0][0] < datetime.datetime.now().date(): 
+        if lastDate[0][0] < datetime.datetime.now(): 
             cidade = cidadeInput 
             cidade = cidade.split(' ')
             if len(cidade) >=  2:
@@ -117,7 +117,7 @@ def weather (cidadeInput, person_id,tableName,cur):
 
 #JAWBONE /////////////\\\\\\\\\\\\\\\\\//////////////////\\\\\\\\\\\\\\\\\\\//////////////////
 #pega os dados de uma pessoa
-def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
+def jawboneMoves(token,person_id,tableName,cur):
 
 
 
@@ -131,10 +131,13 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
     #arquivo = open('nedelJawbone.txt', 'w')
     #de setembro 2015 até outubro 2015
     lastDate = getLastDate(tableName,cur)
-    if lastDate[0][0] is not None and lastDate[0][0].date() < datetime.datetime.now().date(): 
-        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
+    if lastDate[0][0] != None:
+        if lastDate[0][0].date() < datetime.datetime.now().date(): 
+            url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
+        else:
+            return print('Jawbone Moves up to date')
     else:
-        return print('Jawbone Moves up to date')
+        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + '0' + '&&end_time=' + str(datetime.datetime.now().timestamp())
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
     while(1):
@@ -147,7 +150,7 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
         
         
         print ("Requisitando acesso aos dados Moves")
-        request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
+        request = urllib.request.Request(url, headers = {"Authorization": "Bearer " + token  })
         response = urllib.request.urlopen(request).getcode()
         if response !=200:
             break
@@ -201,7 +204,7 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
             #print(information)
             #printTable(tableName,cur)
             print('Jawbone Moves updated')
-            return information
+            return
 
 
 
@@ -399,4 +402,9 @@ def getLastDate(tableName,cur):
         return cur.fetchall()
     elif existsTable(tableName,cur) and tableName == 'weathers':
         cur.execute("SELECT MAX(date) FROM " + tableName + ";")
+        return cur.fetchall()
+
+def getPeopleList(cur):
+    if existsTable('weathers',cur):
+        cur.execute("SELECT * FROM weathers;")
         return cur.fetchall()
