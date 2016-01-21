@@ -81,7 +81,7 @@ while True:
         
         #horaTeste = datetime.datetime.now() + timedelta(hours=1)
         horaTeste = datetime.datetime.now() + timedelta(days=1)
-    sys.stdout.write('\r' + str(datetime.datetime.now())
+    sys.stdout.write('\r' + str(datetime.datetime.now()))
             
             #conn.commit()
         #except:
