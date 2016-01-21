@@ -65,7 +65,7 @@ while True:
     #apenas para teste, conta o tempo na tela
     
     #####
-    if datetime.datetime.now().day == horaTeste.day:
+    if datetime.datetime.now().minute == horaTeste.minute:
         foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
         conn.commit()
         jawboneMoves('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450',1,'activities',cur)
@@ -80,7 +80,7 @@ while True:
         #addWeatherElements('test',weather('porto alegre',True))
         
         #horaTeste = datetime.datetime.now() + timedelta(hours=1)
-        horaTeste = datetime.datetime.now() + timedelta(days=1)
+        horaTeste = datetime.datetime.now() + timedelta(minutes=1)
     sys.stdout.write('\r' + str(datetime.datetime.now()))
             
             #conn.commit()
