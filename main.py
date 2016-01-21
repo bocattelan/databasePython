@@ -60,7 +60,7 @@ while True:
     
     #####
     peopleList = getPeopleList(cur)
-    print (peopleList[0][0])
+    #print (peopleList[0][0])
     if datetime.datetime.now().minute == horaTeste.minute:
 
         for person in peopleList:
@@ -78,4 +78,4 @@ while True:
             conn.commit()
 
         horaTeste = datetime.datetime.now() + timedelta(minutes=1)
-        sys.stdout.write('\r' + str(datetime.datetime.now()))
+    sys.stdout.write('\r' + str(datetime.datetime.now()))
