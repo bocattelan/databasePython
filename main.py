@@ -66,11 +66,11 @@ while True:
         for person in peopleList:
             #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
             print(person[3])
-            if len(person[11]) > 0:
+            if person[11] != None:
                 foursquare(person[11],person[0], 'locations',cur,conn)
                 conn.commit()
                 #jawboneMoves('oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP',1,'activities',cur)
-            if len(person[9]) > 0:
+            if person[9] != None::
                 jawboneMoves(person[9],person[0],'activities',cur)
                 conn.commit()
     #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
