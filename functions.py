@@ -119,16 +119,6 @@ def weather (cidadeInput, person_id,tableName,cur):
 #pega os dados de uma pessoa
 def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
 
-    params = {
-        "response_type=code" : 'code',
-          "client_id": client_id,
-          'scope': 'basic_read extended_read location_read move_read',
-          'redirect_uri' : ''
-        }
-    url = "https://jawbone.com/auth/oauth2/token"
-    request = urllib.request.Request(url, headers = params)
-    #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
-    #data = (urllib.request.urlopen(request).read().decode(encoding))
 
 
     information = []
