@@ -70,7 +70,7 @@ while True:
                 foursquare(person[11],person[0], 'locations',cur,conn)
                 conn.commit()
                 #jawboneMoves('oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP',1,'activities',cur)
-            if person[9] != None::
+            if person[9] != None:
                 jawboneMoves(person[9],person[0],'activities',cur)
                 conn.commit()
     #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
