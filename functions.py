@@ -121,16 +121,6 @@ def jawboneMoves(client_id,client_secret,person_id,tableName,cur):
 
 
 
-    information = []
-    #arquivo = open('newToken.txt' , 'w+')
-    params = {
-          "client_id": client_id,
-          "client_secret": client_secret,
-          "grant_type": 'refresh_token',
-          "refresh_token": ''
-        }
-    url = "https://jawbone.com/auth/oauth2/token"
-    request = urllib.request.Request(url, headers = params)
     #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
     #data = (urllib.request.urlopen(request).read().decode(encoding))
     #dadosNedel = json.loads(data)
