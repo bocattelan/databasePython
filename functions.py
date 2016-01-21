@@ -81,7 +81,7 @@ def weather (cidadeInput, person_id,tableName,cur):
     #  id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
     lastDate = getLastDate(tableName,cur)
     if lastDate[0][0] != None:
-        if lastDate[0][0].date() < datetime.datetime.now(): 
+        if lastDate[0][0] < datetime.datetime.now().date(): 
             cidade = cidadeInput 
             cidade = cidade.split(' ')
             if len(cidade) >=  2:
