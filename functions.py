@@ -80,7 +80,7 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
 def weather (cidadeInput, person_id,tableName,cur):
     #  id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
     lastDate = getLastDate(tableName,cur)
-    if len(lastDate[0]) <= 1:
+    if len(lastDate[0]) >= 1:
         if lastDate[0][0].date() < datetime.datetime.now().date(): 
             cidade = cidadeInput 
             cidade = cidade.split(' ')
