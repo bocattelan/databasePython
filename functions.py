@@ -28,6 +28,10 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosNedel = json.loads(data)
         lastDate = getLastDate(tableName,cur)
+
+        if len(dadosNedel['response']['checkins']["items"]) <=0:
+            print("sem dados do foursquare")
+            return
     except:
         print("ACCSSES DENIED to foursquare")
         return
