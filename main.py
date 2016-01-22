@@ -61,7 +61,7 @@ while True:
     #####
     peopleList = getPeopleList(cur)
     #print (peopleList[0][0])
-    if datetime.datetime.now() <= horaTeste:
+    if datetime.datetime.now() == horaTeste:
 
         for person in peopleList:
             #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
