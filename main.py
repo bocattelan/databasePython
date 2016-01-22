@@ -77,5 +77,5 @@ while True:
             weather('porto alegre','21','weathers',cur)
             conn.commit()
 
-        horaTeste = datetime.datetime.now() + timedelta(day=1)
-    sys.stdout.write('\r' + 'Inicio do programa: ' + str(horaInicio) + 'Tempo atual: ' +str(datetime.datetime.now()))
+        horaTeste = datetime.datetime.now() + timedelta(days=1)
+    sys.stdout.write('\r' + 'Inicio do programa: ' + str(horaInicio) + ' Tempo atual: ' +str(datetime.datetime.now() - timedelta(horaInicio)))
