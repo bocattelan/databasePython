@@ -78,4 +78,4 @@ while True:
             conn.commit()
 
         horaTeste = datetime.datetime.now() + timedelta(days=1)
-    sys.stdout.write('\r' + 'Inicio do programa: ' + str(horaInicio) + ' Tempo atual: ' +str(datetime.datetime.now() - timedelta(horaInicio)))
+    sys.stdout.write('\r' + 'Inicio do programa: ' + str(horaInicio) + ' Tempo atual: ' +str(datetime.datetime.now()))
