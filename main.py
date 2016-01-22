@@ -45,7 +45,7 @@ if not existsTable('locations',cur):
 
 
 
-horaTeste = datetime.datetime.now() + timedelta(seconds=3)
+horaTeste = datetime.datetime.now() + timedelta(seconds=0)
 
 #chamar as funçõs no laço, dentro do try/exept
 horaInicio = datetime.datetime.now()
