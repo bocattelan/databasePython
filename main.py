@@ -61,7 +61,7 @@ while True:
     #####
     peopleList = getPeopleList(cur)
     #print (peopleList[0][0])
-    if datetime.datetime.now().minute == horaTeste.minute:
+    if datetime.datetime.now().day == horaTeste.day:
 
         for person in peopleList:
             #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
@@ -77,5 +77,5 @@ while True:
             weather('porto alegre','21','weathers',cur)
             conn.commit()
 
-        horaTeste = datetime.datetime.now() + timedelta(minutes=1)
+        horaTeste = datetime.datetime.now() + timedelta(day=1)
     sys.stdout.write('\r' + str(datetime.datetime.now()))
