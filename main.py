@@ -58,11 +58,10 @@ while True:
 
     #apenas para teste, conta o tempo na tela
     
-    #####
-    peopleList = getPeopleList(cur)
+    #####   
     #print (peopleList[0][0])
     if datetime.datetime.now() == horaTeste:
-
+        peopleList = getPeopleList(cur)
         for person in peopleList:
             #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
             print(person[3])
