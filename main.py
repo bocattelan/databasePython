@@ -74,7 +74,7 @@ while True:
                 jawboneMoves(person[9],person[0],'activities',cur)
                 conn.commit()
     #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
-            weather('porto alegre','','weathers',cur)
+            weather('porto alegre','0','weathers',cur)
             conn.commit()
 
         horaTeste = datetime.datetime.now() + timedelta(minutes=1)
