@@ -67,7 +67,7 @@ while True:
             #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
             print(person[3])
             if person[11] != None:
-                foursquare(person[11],person[0], 'locations',cur,conn)
+                foursquare(person[10],person[0], 'locations',cur,conn)
                 conn.commit()
                 #jawboneMoves('oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP',1,'activities',cur)
             if person[9] != None:
