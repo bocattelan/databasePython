@@ -172,7 +172,7 @@ def jawboneMoves(token,person_id,tableName,cur):
         for evento in dadosNedel['data']['items']:
             print(evento['date'])
             urlTicks = 'https://jawbone.com/nudge/api/v.1.1/moves/' + evento['xid'] + '/ticks'
-            requestTicks = urllib.request.Request(urlTicks, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
+            requestTicks = urllib.request.Request(urlTicks, headers = {"Authorization": "Bearer " + token  })
             responseTicks = urllib.request.urlopen(requestTicks).getcode()
             if response !=200:
                 break
