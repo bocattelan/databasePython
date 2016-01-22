@@ -48,7 +48,7 @@ if not existsTable('locations',cur):
 horaTeste = datetime.datetime.now() + timedelta(minutes=0)
 
 #chamar as funçõs no laço, dentro do try/exept
-
+horaInicio = datetime.datetime.now()
 while True:
     #yesterday = datetime.datetime(2015, 5, 12, 23, 30)
     #linha = str(datetime.datetime.now())+ ';' + weather("porto alegre", True)
@@ -78,4 +78,4 @@ while True:
             conn.commit()
 
         horaTeste = datetime.datetime.now() + timedelta(day=1)
-    sys.stdout.write('\r' + str(datetime.datetime.now()))
+    sys.stdout.write('\r' + 'Inicio do programa: ' + str(horaInicio) + 'Tempo atual: ' +str(datetime.datetime.now()))
