@@ -22,7 +22,7 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
 
     #OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U
     try:
-        url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=" + client_secret + "&sort=oldestfirst" + "&beforeTimestamp=1451926738" + "&v=20140806&m=foursquare"
+        url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=" + client_secret + "&sort=oldestfirst" + "&afterTimestamp=0" + "&v=20140806&m=foursquare"
         request = urllib.request.Request(url)
         encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
         data = (urllib.request.urlopen(request).read().decode(encoding))
