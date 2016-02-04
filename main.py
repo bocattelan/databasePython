@@ -20,8 +20,8 @@ import sys
 #INICIO DO CORPO DO PROGRAMA //////////////////////////////////////////////
 
 try:
-    conn = psycopg2.connect("dbname=everydayvis_development user=postgres host=localhost")
-    #conn = psycopg2.connect("dbname=postgres user=postgres host=localhost password=cattelan")
+    #conn = psycopg2.connect("dbname=everydayvis_development user=postgres host=localhost")
+    conn = psycopg2.connect("dbname=postgres user=postgres host=localhost password=cattelan")
     cur = conn.cursor()
 except:
     print ("I am unable to connect to the database")
@@ -37,6 +37,13 @@ if not existsTable('weathers',cur):
 
 if not existsTable('locations',cur):
     cur.execute("CREATE TABLE locations (id serial PRIMARY KEY, datetime timestamp,name varchar(255), city varchar(255), country varchar(255), latitude float, longitude float, person_id int,  created_at timestamp,updated_at timestamp);")
+    print('New table created')
+
+
+#code: nil, identity: nil, name: "Cattelan", gender: nil, age: nil, created_at: "2016-01-15 15:33:19", updated_at: "2016-01-15 16:38:18", user_id: 10, jawbone_token: "DudD7GQwFneq_wQM__nChaaNfvpKhnpePZJXREh5iPlscEl9dE...", fitbit_token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NTUzODQ5OTIsInNjb...", foursquare_token: "XS1HHU2VFRG2ANFGKENLWMKNRUCLIRGLHBILWL1TXMCW3WXF">
+
+if not existsTable('people',cur):
+    cur.execute("CREATE TABLE people (id serial PRIMARY KEY,code varchar[255], identity varchar[255], name varchar[255], gender varchar[255], age varchar[255], created_at timestamp, updated_at timestamp, user_id int, jawbone_token varchar[255],fitbit_token varchar(255), foursquare_token varchar(255));")
     print('New table created')
 
 #deleteTable("test",cur)
@@ -66,12 +73,14 @@ while True:
             #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
             print(person[3])
             if person[11] != None:
-                foursquare(person[11],person[0], 'locations',cur,conn)
+                #foursquare(person[11],person[0], 'locations',cur,conn)
                 conn.commit()
                 #jawboneMoves('oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP',1,'activities',cur)
             if person[9] != None:
-                jawboneMoves(person[9],person[0],'activities',cur)
+                #jawboneMoves(person[9],person[0],'activities',cur)
                 conn.commit()
+            if person[10] != None:
+                fitbitMoves(person[10],person[0],'activities',cur)
     #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
             weather('porto alegre','21','weathers',cur)
             conn.commit()
