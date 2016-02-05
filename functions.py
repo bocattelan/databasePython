@@ -17,15 +17,15 @@ from datetime import timedelta
 import sys
 
 
-def fitbitMoves(client_secret,client_id,tableName,cur,conn):
+def fitbitMoves(client_secret,client_id,tableName,cur):
     lastDate = getLastDate(tableName,cur)
     if lastDate[0][0] != None:
         if lastDate[0][0].date() < datetime.datetime.now().date(): 
-            url = 'https://api.fitbit.com/1/user/-/activities/steps/date/' + str(lastDate[0][0].timestamp()) + '/' +str(datetime.datetime.now().timestamp()) +'/1min.json'
+            url = 'https://api.fitbit.com/1/user/229Z77/activities/steps/date/' + str(lastDate[0][0].timestamp()) + '/' +str(datetime.datetime.now().timestamp()) +'/1min.json'
         else:
             return print('Fitbit Moves up to date')
     else:
-        url = 'https://api.fitbit.com/1/user/-/activities/steps/date/' + '0' + '/' + str(datetime.datetime.now().timestamp()) +'/1min.json'
+        url = 'https://api.fitbit.com/1/user/229Z77/activities/steps/date/' + '0' + '/' + str(datetime.datetime.now().date()) +'/1m.json'
     #dois dias
     #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
     while(1):
@@ -36,7 +36,6 @@ def fitbitMoves(client_secret,client_id,tableName,cur,conn):
     #    url = 'http://api.openweathermap.org/data/2.5/find?q=' + cidade[0] + '%20' + cidade[1] +  '&APPID=c202fefe29158aebc3cd656900708e87'
     #else:
         
-        
         print ("Requisitando acesso aos dados Moves")
         request = urllib.request.Request(url, headers = {"Authorization": "Bearer " + client_secret  })
         response = urllib.request.urlopen(request).getcode()
@@ -44,6 +43,7 @@ def fitbitMoves(client_secret,client_id,tableName,cur,conn):
             break
         print("Baixando dados")
         print("Baixados")
+        return
 
 
 def foursquare (client_secret,client_id,tableName,cur,conn):

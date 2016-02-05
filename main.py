@@ -42,16 +42,17 @@ if not existsTable('locations',cur):
 
 #code: nil, identity: nil, name: "Cattelan", gender: nil, age: nil, created_at: "2016-01-15 15:33:19", updated_at: "2016-01-15 16:38:18", user_id: 10, jawbone_token: "DudD7GQwFneq_wQM__nChaaNfvpKhnpePZJXREh5iPlscEl9dE...", fitbit_token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NTUzODQ5OTIsInNjb...", foursquare_token: "XS1HHU2VFRG2ANFGKENLWMKNRUCLIRGLHBILWL1TXMCW3WXF">
 
-if not existsTable('people',cur):
-    cur.execute("CREATE TABLE people (id serial PRIMARY KEY,code varchar[255], identity varchar[255], name varchar[255], gender varchar[255], age varchar[255], created_at timestamp, updated_at timestamp, user_id int, jawbone_token varchar[255],fitbit_token varchar(255), foursquare_token varchar(255));")
-    print('New table created')
+#if not existsTable('people',cur):
+    #cur.execute("CREATE TABLE people (id serial PRIMARY KEY,code varchar[255], identity varchar[255], name varchar[255], gender varchar[255], age varchar[255], created_at timestamp, updated_at timestamp, user_id int, jawbone_token varchar[255],fitbit_token varchar(255), foursquare_token varchar(255));")
+    #print('New table created')
 
 #deleteTable("test",cur)
 
 
 
 
-
+fitbitMoves("eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NTUzODQ5OTIsInNjb3BlcyI6InJ3ZWkgcnBybyByaHIgcmxvYyBybnV0IHJzbGUgcnNldCByYWN0IHJzb2MiLCJzdWIiOiIzV1c3NloiLCJhdWQiOiIyMjlaNzciLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpYXQiOjE0NTI4NzM5ODN9.EcIFmeovGBKVD92Xs6zxgkHlYuLAZv06Xv32iDr9QwI"
+,'bruno','activities',cur)
 horaTeste = datetime.datetime.now() + timedelta(seconds=0)
 
 #chamar as funçõs no laço, dentro do try/exept
