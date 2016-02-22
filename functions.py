@@ -307,7 +307,7 @@ def jawboneSleep(client_id,client_secret):
 
         for evento in dadosNedel['data']['items']:
             print(evento['date'])
-            urlTicks = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves/' + evento['xid'] + '/ticks'
+            urlTicks = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps/' + evento['xid'] + '/ticks'
             request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
             response = urllib.request.urlopen(request).getcode()
             encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')

@@ -39,6 +39,10 @@ if not existsTable('locations',cur):
     cur.execute("CREATE TABLE locations (id serial PRIMARY KEY, datetime timestamp,name varchar(255), city varchar(255), country varchar(255), latitude float, longitude float, person_id int,  created_at timestamp,updated_at timestamp);")
     print('New table created')
 
+if not existsTable('sleeps',cur):
+    cur.execute("CREATE TABLE activities (id serial PRIMARY KEY, datetime timestamp,depth int, person_id int, created_at timestamp,updated_at timestamp);")
+    print('New table created')
+
 
 #code: nil, identity: nil, name: "Cattelan", gender: nil, age: nil, created_at: "2016-01-15 15:33:19", updated_at: "2016-01-15 16:38:18", user_id: 10, jawbone_token: "DudD7GQwFneq_wQM__nChaaNfvpKhnpePZJXREh5iPlscEl9dE...", fitbit_token: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NTUzODQ5OTIsInNjb...", foursquare_token: "XS1HHU2VFRG2ANFGKENLWMKNRUCLIRGLHBILWL1TXMCW3WXF">
 
