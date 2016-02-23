@@ -24,29 +24,19 @@ import sys
 
 def jawboneSleep(token,person_id,tableName,cur):
 
-
-    #arquivo = open('nedelJawbone.txt', 'w')
-    #de setembro 2015 até outubro 2015
     lastDate = getLastDate(tableName,cur)
     try:
-        if lastDate[0][0] != None:
-            if lastDate[0][0].date() < datetime.datetime.now().date(): 
-                url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
-            else:
-                return print('Jawbone Sleeps up to date')
+        if lastDate[0][0].date() < datetime.datetime.now().date(): 
+            url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
+        else:
+            return print('Jawbone Sleeps up to date')
     except:
-        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=' + '0' + '&&end_time=' + str(datetime.datetime.now().timestamp())
+        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1383289200'
+        #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1383289200'
         print (url)
-    #dois dias
-    #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
+    
     while(1):
-    #cidade  =  input("Digite o nome da cidade procurada: ")
-    #cidade = cidade.split(' ')
 
-    #if len(cidade) >  2:
-    #    url = 'http://api.openweathermap.org/data/2.5/find?q=' + cidade[0] + '%20' + cidade[1] +  '&APPID=c202fefe29158aebc3cd656900708e87'
-    #else:
-        
         
         print ("Requisitando acesso aos dados Sleeps")
         print(token)
@@ -81,10 +71,10 @@ def jawboneSleep(token,person_id,tableName,cur):
             #for i in dadosNedelDetalhes['data']['items']:
                 #print(i['steps'])
 
-            passosIntervalo = 0
-            tempoIntervalo = datetime.datetime.utcfromtimestamp(dadosNedelDetalhes['data']['items'][0]['time_completed'])
+            #passosIntervalo = 0
+            #tempoIntervalo = datetime.datetime.utcfromtimestamp(dadosNedelDetalhes['data']['items'][0]['time_completed'])
             for evento in dadosNedelDetalhes['data']['items']:
-                addMoveElement(tableName,[datetime.datetime.utcfromtimestamp(evento['time']),evento['depth'],person_id,datetime.datetime.now(),datetime.datetime.now()],cur)
+                addSleepElement(tableName,[datetime.datetime.utcfromtimestamp(evento['time']),evento['depth'],person_id,datetime.datetime.now(),datetime.datetime.now()],cur)
 
         if 'links' in dadosNedel['data'].keys():
             url = 'https://jawbone.com' + dadosNedel['data']['links']['next']
@@ -119,26 +109,10 @@ def jawboneHeart(client_id,client_secret):
         }
     url = "https://jawbone.com/auth/oauth2/token"
     request = urllib.request.Request(url, headers = params)
-    #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
-    #data = (urllib.request.urlopen(request).read().decode(encoding))
-    #dadosNedel = json.loads(data)
-    #print (params["refresh_token"])
-    #json.dump(data,arquivo)
 
-
-    #arquivo = open('nedelJawbone.txt', 'w')
-    #de setembro 2015 até outubro 2015
     url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/heartrates?start_time=1441065600&&end_time=1446336000'
-    #dois dias
-    #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
     while(1):
-    #cidade  =  input("Digite o nome da cidade procurada: ")
-    #cidade = cidade.split(' ')
 
-    #if len(cidade) >  2:
-    #    url = 'http://api.openweathermap.org/data/2.5/find?q=' + cidade[0] + '%20' + cidade[1] +  '&APPID=c202fefe29158aebc3cd656900708e87'
-    #else:
-        
         
         print ("Requisitando acesso aos dados Heart Rate")
         request = urllib.request.Request(url, headers = {"Authorization": "Bearer oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP"  })
@@ -210,7 +184,7 @@ def deleteTable(tableName,cur):
         print("Table '"+ tableName +"' deleted")
 
 def getLastDate(tableName,cur):
-    if existsTable(tableName,cur) and tableName == 'activities' or tableName == 'locations':
+    if existsTable(tableName,cur) and tableName == 'activities' or tableName == 'locations' or tableName == 'sleeps':
         cur.execute("SELECT MAX(datetime) FROM " + tableName + ";")
         return cur.fetchall()
     elif existsTable(tableName,cur) and tableName == 'weathers':
@@ -338,7 +312,7 @@ def jawboneMoves(token,person_id,tableName,cur):
             print('Jawbone Moves updated')
             return
 
-jawboneMoves("oJu-seHwrstYgtTAQpuUx6aNfvpKhnpePZJXREh5iPkOwO__AqDaI_kdShCqzO0sitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP",6,"activities",cur)
+#jawboneMoves("oJu-seHwrstYgtTAQpuUx6aNfvpKhnpePZJXREh5iPkOwO__AqDaI_kdShCqzO0sitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP",6,"activities",cur)
 
 jawboneSleep("oJu-seHwrstYgtTAQpuUx6aNfvpKhnpePZJXREh5iPkOwO__AqDaI_kdShCqzO0sitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP",6,"sleeps",cur)
-
+conn.commit()

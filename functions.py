@@ -154,33 +154,19 @@ def weather (cidadeInput, person_id,tableName,cur):
 def jawboneMoves(token,person_id,tableName,cur):
 
 
-
-    #encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
-    #data = (urllib.request.urlopen(request).read().decode(encoding))
-    #dadosNedel = json.loads(data)
-    #print (params["refresh_token"])
-    #json.dump(data,arquivo)
-
-
-    #arquivo = open('nedelJawbone.txt', 'w')
-    #de setembro 2015 até outubro 2015
     lastDate = getLastDate(tableName,cur)
-    if lastDate[0][0] != None:
-        if lastDate[0][0].date() < datetime.datetime.now().date(): 
-            url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
-        else:
-            return print('Jawbone Moves up to date')
-    else:
-        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + '0' + '&&end_time=' + str(datetime.datetime.now().timestamp())
-    #dois dias
-    #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1441065600&&end_time=1441152000'
+    try:
+        if lastDate[0][0] != None:
+            if lastDate[0][0].date() < datetime.datetime.now().date(): 
+                url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
+            else:
+                return print('Jawbone Sleeps up to date')
+    except:
+        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=1383289200'
+        #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1383289200'
+        print (url)
+    
     while(1):
-    #cidade  =  input("Digite o nome da cidade procurada: ")
-    #cidade = cidade.split(' ')
-
-    #if len(cidade) >  2:
-    #    url = 'http://api.openweathermap.org/data/2.5/find?q=' + cidade[0] + '%20' + cidade[1] +  '&APPID=c202fefe29158aebc3cd656900708e87'
-    #else:
         
         
         print ("Requisitando acesso aos dados Moves")
