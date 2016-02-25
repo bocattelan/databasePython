@@ -20,8 +20,8 @@ import sys
 #INICIO DO CORPO DO PROGRAMA //////////////////////////////////////////////
 
 try:
-    #conn = psycopg2.connect("dbname=everydayvis_development user=postgres host=localhost")
-    conn = psycopg2.connect("dbname=postgres user=postgres host=localhost password=cattelan")
+    conn = psycopg2.connect("dbname=everydayvis_development user=postgres host=localhost")
+    #conn = psycopg2.connect("dbname=postgres user=postgres host=localhost password=cattelan")
     cur = conn.cursor()
 except:
     print ("I am unable to connect to the database")
@@ -39,8 +39,8 @@ if not existsTable('locations',cur):
     cur.execute("CREATE TABLE locations (id serial PRIMARY KEY, datetime timestamp,name varchar(255), city varchar(255), country varchar(255), latitude float, longitude float, person_id int,  created_at timestamp,updated_at timestamp);")
     print('New table created')
 
-if not existsTable('sleeps',cur):
-    cur.execute("CREATE TABLE activities (id serial PRIMARY KEY, datetime timestamp,depth int, person_id int, created_at timestamp,updated_at timestamp);")
+if not existsTable('sleep_jawbones',cur):
+    cur.execute("CREATE TABLE sleep_jawbones (id serial PRIMARY KEY, datetime timestamp,depth int, person_id int, created_at timestamp,updated_at timestamp);")
     print('New table created')
 
 
@@ -55,8 +55,8 @@ if not existsTable('sleeps',cur):
 
 
 
-fitbitMoves("eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NTUzODQ5OTIsInNjb3BlcyI6InJ3ZWkgcnBybyByaHIgcmxvYyBybnV0IHJzbGUgcnNldCByYWN0IHJzb2MiLCJzdWIiOiIzV1c3NloiLCJhdWQiOiIyMjlaNzciLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpYXQiOjE0NTI4NzM5ODN9.EcIFmeovGBKVD92Xs6zxgkHlYuLAZv06Xv32iDr9QwI"
-,'bruno','activities',cur)
+#fitbitMoves("eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NTUzODQ5OTIsInNjb3BlcyI6InJ3ZWkgcnBybyByaHIgcmxvYyBybnV0IHJzbGUgcnNldCByYWN0IHJzb2MiLCJzdWIiOiIzV1c3NloiLCJhdWQiOiIyMjlaNzciLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpYXQiOjE0NTI4NzM5ODN9.EcIFmeovGBKVD92Xs6zxgkHlYuLAZv06Xv32iDr9QwI"
+#,'bruno','activities',cur)
 horaTeste = datetime.datetime.now() + timedelta(seconds=0)
 
 #chamar as funçõs no laço, dentro do try/exept
@@ -78,14 +78,15 @@ while True:
             #foursquare("OQLGPMDLAZ25JAZE5VW5DRF0SOOSWLCXQMEED5IZSLBBQN3U",'21', 'locations',cur,conn)
             print(person[3])
             if person[11] != None:
-                #foursquare(person[11],person[0], 'locations',cur,conn)
+                foursquare(person[11],person[0], 'locations',cur,conn)
                 conn.commit()
                 #jawboneMoves('oJu-seHwrstYgtTAQpuUxycYC84VDTuWUUjXiXCc2yhDhJTENkwuyJtiaaIX-06Pitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP',1,'activities',cur)
             if person[9] != None:
-                #jawboneMoves(person[9],person[0],'activities',cur)
+                jawboneMoves(person[9],person[0],'activities',cur)
+                jawboneSleep(person[9],person[0],"sleep_jawbones",cur)
                 conn.commit()
-            if person[10] != None:
-                fitbitMoves(person[10],person[0],'activities',cur)
+            #if person[10] != None:
+                #fitbitMoves(person[10],person[0],'activities',cur)
     #jawboneSleep('0NIN0D_htj0','aac3f063d18489fc2e3fa3dabbd5c01a120fa450')
             weather('porto alegre','21','weathers',cur)
             conn.commit()

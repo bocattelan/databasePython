@@ -308,6 +308,72 @@ def jawboneSleep(client_id,client_secret):
             #print(information)
             return information
 
+def jawboneSleep(token,person_id,tableName,cur):
+
+    lastDate = getLastDate(tableName,cur)
+    try:
+        if lastDate[0][0].date() < datetime.datetime.now().date(): 
+            url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
+        else:
+            return print('Jawbone Sleeps up to date')
+    except:
+        url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1383289200'
+        #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1383289200'
+        print (url)
+    
+    while(1):
+
+        
+        print ("Requisitando acesso aos dados Sleeps")
+        print(token)
+        request = urllib.request.Request(url, headers = {"Authorization": "Bearer " + token  })
+        response = urllib.request.urlopen(request).getcode()
+        if response !=200:
+            break
+        print("Baixando dados")
+        print("Baixados")
+
+
+
+        encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
+        data = (urllib.request.urlopen(request).read().decode(encoding))
+        dadosNedel = json.loads(data)
+        
+        #json.dump(dadosNedel,arquivo)
+
+        for evento in dadosNedel['data']['items']:
+            print(evento['date'])
+            urlTicks = 'https://jawbone.com/nudge/api/v.1.1/sleeps/' + evento['xid'] + '/ticks'
+            requestTicks = urllib.request.Request(urlTicks, headers = {"Authorization": "Bearer " + token  })
+            responseTicks = urllib.request.urlopen(requestTicks).getcode()
+            if response !=200:
+                break
+            encodingTicks = urllib.request.urlopen(requestTicks).info().get_param('charset', 'utf8')
+            dataTicks = (urllib.request.urlopen(requestTicks).read().decode(encodingTicks))
+            dadosNedelDetalhes = json.loads(dataTicks)
+            #aqui o information vai ter todos os ticks de um "move"
+            #information.append(dadosNedelDetalhes)
+            #print(dadosNedelDetalhes['data']['items'])
+            #for i in dadosNedelDetalhes['data']['items']:
+                #print(i['steps'])
+
+            #passosIntervalo = 0
+            #tempoIntervalo = datetime.datetime.utcfromtimestamp(dadosNedelDetalhes['data']['items'][0]['time_completed'])
+            for evento in dadosNedelDetalhes['data']['items']:
+                addSleepElement(tableName,[datetime.datetime.utcfromtimestamp(evento['time']),evento['depth'],person_id,datetime.datetime.now(),datetime.datetime.now()],cur)
+
+        if 'links' in dadosNedel['data'].keys():
+            url = 'https://jawbone.com' + dadosNedel['data']['links']['next']
+            #print('continuando')
+        else: 
+            #print(information)
+            #printTable(tableName,cur)
+            print('Jawbone Sleeps updated')
+            return
+
+
+
+
 def jawboneHeart(client_id,client_secret):
 
     params = {
@@ -410,6 +476,12 @@ def addFoursquareElement(tableName,element,cur):
         cur.execute(query + "(datetime, name,city,country,latitude,longitude,person_id,created_at,updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",element)
  # id  |      datetime       |                             name                              |         city         |    country    |                 latitude                 |                longitude                 | person_id |         created_at         |         updated_at
 
+def addSleepElement(tableName,element,cur):
+    if existsTable(tableName,cur):
+        query = "INSERT INTO " + tableName
+        cur.execute(query + "(datetime, depth,person_id,created_at, updated_at) VALUES (%s, %s,%s,%s,%s)",element)
+
+
 
 def deleteTable(tableName,cur):
     if existsTable(tableName,cur):
@@ -417,7 +489,7 @@ def deleteTable(tableName,cur):
         print("Table '"+ tableName +"' deleted")
 
 def getLastDate(tableName,cur):
-    if existsTable(tableName,cur) and tableName == 'activities' or tableName == 'locations':
+    if existsTable(tableName,cur) and tableName == 'activities' or tableName == 'locations' or tableName == 'sleep_jawbones':
         cur.execute("SELECT MAX(datetime) FROM " + tableName + ";")
         return cur.fetchall()
     elif existsTable(tableName,cur) and tableName == 'weathers':

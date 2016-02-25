@@ -82,7 +82,7 @@ def jawboneSleep(token,person_id,tableName,cur):
         else: 
             #print(information)
             #printTable(tableName,cur)
-            print('Jawbone Moves updated')
+            print('Jawbone Sleeps updated')
             return
 
 def jawboneHeart(client_id,client_secret):
@@ -316,3 +316,5 @@ def jawboneMoves(token,person_id,tableName,cur):
 
 jawboneSleep("oJu-seHwrstYgtTAQpuUx6aNfvpKhnpePZJXREh5iPkOwO__AqDaI_kdShCqzO0sitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP",6,"sleeps",cur)
 conn.commit()
+
+ #1=awake, 2=light, 3=deep
