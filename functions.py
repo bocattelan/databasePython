@@ -156,11 +156,10 @@ def jawboneMoves(token,person_id,tableName,cur):
 
     lastDate = getLastDate(tableName,cur)
     try:
-        if lastDate[0][0] != None:
-            if lastDate[0][0].date() < datetime.datetime.now().date(): 
-                url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
-            else:
-                return print('Jawbone Sleeps up to date')
+        if lastDate[0][0].date() < datetime.datetime.now().date(): 
+            url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
+        else:
+            return print('Jawbone Moves up to date')
     except:
         url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=1383289200'
         #url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=1383289200'
