@@ -18,7 +18,7 @@ import sys
 
 
 def fitbitMoves(client_secret,client_id,tableName,cur):
-    lastDate = getLastDate(tableName,cur)
+    lastDate = getLastDate(tableName,person_id,cur)
     if lastDate[0][0] != None:
         if lastDate[0][0].date() < datetime.datetime.now().date(): 
             url = 'https://api.fitbit.com/1/user/229Z77/activities/steps/date/' + str(lastDate[0][0].timestamp()) + '/' +str(datetime.datetime.now().timestamp()) +'/1min.json'
@@ -57,7 +57,7 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
         encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
         data = (urllib.request.urlopen(request).read().decode(encoding))
         dadosNedel = json.loads(data)
-        lastDate = getLastDate(tableName,cur)
+        lastDate = getLastDate(tableName,person_id,cur)
 
         if len(dadosNedel['response']['checkins']["items"]) <=0:
             print("sem dados do foursquare")
@@ -80,7 +80,7 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
             encoding = urllib.request.urlopen(request).info().get_param('charset', 'utf8')
             data = (urllib.request.urlopen(request).read().decode(encoding))
             dadosNedel = json.loads(data)
-            lastDate = getLastDate(tableName,cur)
+            lastDate = getLastDate(tableName,person_id,cur)
         except:
             print("ACCSSES DENIED to foursquare")
             break
@@ -113,7 +113,7 @@ def foursquare (client_secret,client_id,tableName,cur,conn):
 #pega os dados de uma cidade NO MOMENTO
 def weather (cidadeInput, person_id,tableName,cur):
     #  id  |    date    | max_temperature | mean_temperature | min_temperature | precipitation |          events           | person_id |         created_at         |         updated_at
-    lastDate = getLastDate(tableName,cur)
+    lastDate = getLastDate(tableName,person_id,cur)
     if lastDate[0][0] != None:
         if lastDate[0][0] < datetime.datetime.now().date(): 
             cidade = cidadeInput 
@@ -154,7 +154,7 @@ def weather (cidadeInput, person_id,tableName,cur):
 def jawboneMoves(token,person_id,tableName,cur):
 
 
-    lastDate = getLastDate(tableName,cur)
+    lastDate = getLastDate(tableName,person_id,cur)
     try:
         if lastDate[0][0].date() < datetime.datetime.now().date(): 
             url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/moves?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
@@ -186,6 +186,8 @@ def jawboneMoves(token,person_id,tableName,cur):
 
         for evento in dadosNedel['data']['items']:
             print(evento['date'])
+            print(evento['details']['steps'])
+            print(' ')
             urlTicks = 'https://jawbone.com/nudge/api/v.1.1/moves/' + evento['xid'] + '/ticks'
             requestTicks = urllib.request.Request(urlTicks, headers = {"Authorization": "Bearer " + token  })
             responseTicks = urllib.request.urlopen(requestTicks).getcode()
@@ -199,17 +201,17 @@ def jawboneMoves(token,person_id,tableName,cur):
             #print(dadosNedelDetalhes['data']['items'])
             #for i in dadosNedelDetalhes['data']['items']:
                 #print(i['steps'])
-
             passosIntervalo = 0
             tempoIntervalo = datetime.datetime.utcfromtimestamp(dadosNedelDetalhes['data']['items'][0]['time_completed'])
             for evento in dadosNedelDetalhes['data']['items']:
+                    
                     if datetime.datetime.utcfromtimestamp(evento['time_completed']) > tempoIntervalo:
                         addMoveElement(tableName,[tempoIntervalo,passosIntervalo,person_id,datetime.datetime.now(),datetime.datetime.now()],cur)
                         tempoIntervalo = datetime.datetime.utcfromtimestamp(evento['time_completed']) + timedelta(minutes=10)
                         #print (passosIntervalo)
                         passosIntervalo = 0
+                        
                         #salvar coisas aqui no BD
-
                     #if 'steps' in dadosNedelDetalhes['data']['items'][j].keys():
                     passosIntervalo = passosIntervalo + evento['steps']
                     #print(str(passosIntervalo) + ' ' +str(datetime.datetime.utcfromtimestamp(evento['time_completed'] )))
@@ -229,7 +231,7 @@ def jawboneMoves(token,person_id,tableName,cur):
 
 def jawboneSleep(token,person_id,tableName,cur):
 
-    lastDate = getLastDate(tableName,cur)
+    lastDate = getLastDate(tableName,person_id,cur)
     try:
         if lastDate[0][0].date() < datetime.datetime.now().date(): 
             url = 'https://jawbone.com/nudge/api/v.1.1/users/@me/sleeps?start_time=' + str(lastDate[0][0].timestamp()) + '&&end_time=' + str(datetime.datetime.now().timestamp())
@@ -407,12 +409,12 @@ def deleteTable(tableName,cur):
         cur.execute("DROP TABLE " + tableName + " ;")
         print("Table '"+ tableName +"' deleted")
 
-def getLastDate(tableName,cur):
+def getLastDate(tableName,person_id,cur):
     if existsTable(tableName,cur) and tableName == 'activities' or tableName == 'locations' or tableName == 'sleep_jawbones':
-        cur.execute("SELECT MAX(datetime) FROM " + tableName + ";")
+        cur.execute("SELECT MAX(datetime) FROM " + tableName + " where person_id = " + str(person_id) + ";")
         return cur.fetchall()
     elif existsTable(tableName,cur) and tableName == 'weathers':
-        cur.execute("SELECT MAX(date) FROM " + tableName + ";")
+        cur.execute("SELECT MAX(date) FROM " + tableName + " where person_id = " + str(person_id) + ";")
         return cur.fetchall()
 
 def getPeopleList(cur):

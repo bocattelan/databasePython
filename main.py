@@ -20,8 +20,8 @@ import sys
 #INICIO DO CORPO DO PROGRAMA //////////////////////////////////////////////
 
 try:
-    conn = psycopg2.connect("dbname=everydayvis_development user=postgres host=localhost")
-    #conn = psycopg2.connect("dbname=postgres user=postgres host=localhost password=cattelan")
+    #conn = psycopg2.connect("dbname=everydayvis_development user=postgres host=localhost")
+    conn = psycopg2.connect("dbname=postgres user=postgres host=localhost password=cattelan")
     cur = conn.cursor()
 except:
     print ("I am unable to connect to the database")
@@ -55,7 +55,8 @@ if not existsTable('sleep_jawbones',cur):
 
 
 
-#fitbitMoves("eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NTUzODQ5OTIsInNjb3BlcyI6InJ3ZWkgcnBybyByaHIgcmxvYyBybnV0IHJzbGUgcnNldCByYWN0IHJzb2MiLCJzdWIiOiIzV1c3NloiLCJhdWQiOiIyMjlaNzciLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJpYXQiOjE0NTI4NzM5ODN9.EcIFmeovGBKVD92Xs6zxgkHlYuLAZv06Xv32iDr9QwI"
+jawboneMoves("oJu-seHwrstYgtTAQpuUx6aNfvpKhnpePZJXREh5iPkOwO__AqDaI_kdShCqzO0sitl9KvYhBDiSYPnWZGqRFVECdgRlo_GULMgGZS0EumxrKbZFiOmnmAPChBPDZ5JP",66,'activities',cur)
+conn.commit()
 #,'bruno','activities',cur)
 horaTeste = datetime.datetime.now() + timedelta(seconds=0)
 
